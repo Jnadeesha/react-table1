@@ -1,0 +1,188 @@
+{
+    "config": {
+        "id": "test_analyses_process",
+        "type": "coffee",
+        "analyses": [
+            {
+                "id": "parser_rules_payment",
+                "analysis": "Forestpin.ParserRules",
+                "param": {
+                    "ruleSeperator": "‘/’"
+                },
+                "rate": [
+                    {
+                        "key": "data",
+                        "filter": {
+                            "dataset": "Payment"
+                        },
+                        "map": {
+                            "ruleField": "Risk"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "payment_rules",
+                "analysis": "Forestpin.Rules",
+                "rate": [
+                    {
+                        "key": "data",
+                        "filter": {
+                            "dataset": "Payment"
+                        },
+                        "map": {
+                            "UniqueID": "UniqueID",
+                            "PaymentID": "PaymentID",
+                            "Payment": "Payment",
+                            "PaymentMode": "PaymentMode",
+                            "Bank": "Bank",
+                            "Amount": "Amount",
+                            "Date": "Date",
+                            "Plant": "Plant",
+                            "Cashier": "Cashier"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "sales_rules",
+                "analysis": "Forestpin.Rules",
+                "rate": [
+                    {
+                        "key": "data",
+                        "filter": {
+                            "dataset": "Sales"
+                        },
+                        "map": {
+                            "InvoiceID": "InvoiceID",
+                            "Branch": "Branch",
+                            "City": "City",
+                            "CustomerType": "CustomerType",
+                            "Gender": "Gender",
+                            "ProductLine": "ProductLine",
+                            "UnitPrice": "UnitPrice",
+                            "Quantity": "Quantity",
+                            "Tax5Per": "Tax5Per",
+                            "Amount": "Amount",
+                            "Date": "Date",
+                            "PaymentMode": "PaymentMode"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "fd_rules",
+                "analysis": "Forestpin.Rules",
+                "param": {
+                    "isSpecific": true,
+                    "logicalOperator": "logicalOperator",
+                    "interval": "interval",
+                    "type": "type",
+                    "field": "Amount",
+                    "count": 10,
+                    "maxCount": 15,
+                    "lookup_map": 0,
+                    "specificValue": 2000000
+                },
+                "rate": [
+                    {
+                        "key": "data",
+                        "filter": {
+                            "dataset": "FD"
+                        },
+                        "map": {
+                            "AccountNo": "AccountNo",
+                            "CreditDebit": "CreditDebit",
+                            "Amount": "Amount",
+                            "Date": "Date",
+                            "AccountType": "AccountType",
+                            "TransactionType": "TransactionType",
+                            "RiskCategory": "RiskCategory",
+                            "CustomerType": "CustomerType",
+                            "Rules": "Rules",
+                            "value": "Amount",
+                            "group": "AccountNo"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "savings_rules",
+                "analysis": "Forestpin.Rules",
+                "param": {
+                    "isSpecific": true,
+                    "logicalOperator": "logicalOperator",
+                    "interval": "interval",
+                    "type": "type",
+                    "field": "Amount",
+                    "count": 10,
+                    "maxCount": 15,
+                    "lookup_map": 0,
+                    "specificValue": 2000000
+                },
+                "require": {
+                    "lookup_maps": [
+                        "fds2",
+                        "fds45",
+                        "fds49",
+                        "fds47",
+                        "fds76",
+                        "s60",
+                        "fds61",
+                        "fds68",
+                        "fds70",
+                        "fds3",
+                        "fds57",
+                        "fds4"
+                    ]
+                },
+                "rate": [
+                    {
+                        "key": "data",
+                        "filter": {
+                            "dataset": "Saving"
+                        },
+                        "map": {
+                            "AccountNo": "AccountNo",
+                            "CreditDebit": "CreditDebit",
+                            "Amount": "Amount",
+                            "Date": "Date",
+                            "AccountType": "AccountType",
+                            "TransactionType": "TransactionType",
+                            "CustomerRiskRating": "CustomerRiskRating",
+                            "RiskCategory": "RiskCategory",
+                            "CustomerType": "CustomerType",
+                            "value": "Amount",
+                            "group": "AccountNo",
+                            "Rules": "Rules",
+                            "FDS68": "FDS68",
+                            "FDS70": "FDS70",
+                            "FDS57": "FDS57"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "simple_comp_payment",
+                "analysis": "Forestpin.SimpleComparator",
+                "param": {
+                    "isSpecific": true,
+                    "logicalOperator": ">",
+                    "specificValue": 5000
+                },
+                "rate": [
+                    {
+                        "key": "data",
+                        "filter": {
+                            "dataset": "Payment"
+                        },
+                        "map": {
+                            "value": "Amount",
+                            "compValue": "MinRate"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
